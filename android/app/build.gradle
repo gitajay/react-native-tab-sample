@@ -102,7 +102,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.mobileapp"
+        applicationId "com.example.mymobileapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -138,6 +138,8 @@ android {
 }
 
 dependencies {
+    implementation "com.google.firebase:firebase-core:16.0.1"
+    implementation project(':react-native-google-signin')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-reanimated')
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -151,3 +153,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

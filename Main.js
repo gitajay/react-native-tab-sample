@@ -3,13 +3,15 @@ import { StyleSheet, Dimensions, View } from 'react-native'
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 import SplashScreen from './splash/splashInit'
+import Login from './component/login'
+import ScrollViewExample from './component/list'
 
 
 const FirstRoute = () => (
-    <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
+    <Login />
   );
   const SecondRoute = () => (
-    <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
+    <ScrollViewExample />
   );
 
 export default function Main() {
