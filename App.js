@@ -4,7 +4,6 @@ import { Platform, StyleSheet, View, Text } from 'react-native'
 import Main from './Main'
 
 export default function App() {
-  console.warn(Platform)
   return (
     <View style={styles.container}>
       <Main />
