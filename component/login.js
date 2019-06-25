@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, TextInput, Text, View, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from 'react-native-google-signin';
 
+import { writeUserData } from '../services/users'
+
 
 export default function Login() {
     const [ userInfo, setUserInfo ] = useState('')
+    const [ email, setEmail ] = useState('')
+    const [ userFName, setUserFName ] = useState('')
+    const [ userLName, setUserLName ] = useState('')
 
   const _signIn = async () => {
     console.warn(userInfo)
     //Prompts a modal to let the user sign in into your application.
     try {
+      await GoogleSignin.configure();
       //await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.warn('User Info --> ', userInfo);
@@ -31,17 +37,40 @@ export default function Login() {
       }
     }
   };
+  const onLoginOrRegister = async () => {
+    try {
+      GoogleSignin.configure().then(() => {
+        GoogleSignin.signIn()
+          .then((data) => {
+            console.warn('data',data)
+          })
+          .catch((error) => {
+            console.warn('error',error)
+          })
+      })
+      .catch((error) => {
+        console.warn('configure error',error)
+      })
+    }
+    catch(error) {
+      console.warn('configure',error)
+    }
+  }
 
     useEffect(() => {
         //console.warn(userInfo)
-        GoogleSignin.configure({
+        /*GoogleSignin.configure({
             //It is mandatory to call this method before attempting to call signIn()
             scopes: ['https://www.googleapis.com/auth/drive.readonly'],
             // Repleace with your webClientId generated from Firebase console
             webClientId:
-              '582154471455-9rg1kel03io0nv9ovenon8a4uctmkabb.apps.googleusercontent.com',
-        });
+              '971072333389-4a2c0cf0lnu3gafsjh87vm93vl848206.apps.googleusercontent.com',
+        });*/
     })
+
+    const handleSubmit = () => {
+      writeUserData(email, userFName, userLName)
+    }
 
     return (
         <View style={[styles.container, { backgroundColor: '#ff4081' }]}> 
@@ -49,48 +78,75 @@ export default function Login() {
                 style={{ width: 312, height: 48 }}
                 size={GoogleSigninButton.Size.Wide}
                 color={GoogleSigninButton.Color.Light}
-                onPress={_signIn}
+                onPress={onLoginOrRegister}
             />
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Your First name"
+                maxLength={20}
+                value={userFName}
+                onBlur={Keyboard.dismiss}
+                onChangeText={setUserFName}
+              />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Your Last name"
+                maxLength={20}
+                value={userLName}
+                onBlur={Keyboard.dismiss}
+                onChangeText={setUserLName}
+              />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Your Email"
+                maxLength={20}
+                value={email}
+                onBlur={Keyboard.dismiss}
+                onChangeText={setEmail}
+              />
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleSubmit}
+              >
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
         </View>
     )
 }
 
-  const _getCurrentUser = async () => {
-    //May be called eg. in the componentDidMount of your main component.
-    //This method returns the current user
-    //if they already signed in and null otherwise.
-    try {
-      const userInfo = await GoogleSignin.signInSilently();
-      this.setState({ userInfo });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const _signOut = async () => {
-    //Remove user session from the device.
-    try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      this.setState({ user: null }); // Remove the user from your app's state as well
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const _revokeAccess = async () => {
-    //Remove your application from the user authorized applications.
-    try {
-      await GoogleSignin.revokeAccess();
-      console.log('deleted');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
 const styles = StyleSheet.create({
-    container: {
+    inputContainercontainer: {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     },
+    inputContainer: {
+      paddingTop: 15
+    },
+    textInput: {
+      borderColor: '#CCCCCC',
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      height: 50,
+      fontSize: 25,
+      paddingLeft: 20,
+      paddingRight: 20
+    },
+    saveButton: {
+      borderWidth: 1,
+      borderColor: '#007BFF',
+      backgroundColor: '#007BFF',
+      padding: 15,
+      margin: 5
+    },
+    saveButtonText: {
+      color: '#FFFFFF',
+      fontSize: 20,
+      textAlign: 'center'
+    }
   });

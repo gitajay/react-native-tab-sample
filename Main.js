@@ -9,10 +9,10 @@ import ScrollViewExample from './component/list'
 
 const FirstRoute = () => (
     <Login />
-  );
-  const SecondRoute = () => (
+);
+const SecondRoute = () => (
     <ScrollViewExample />
-  );
+);
 
 export default function Main() {
     const [ isLoading, setIsLoading ] = useState(true)
@@ -21,13 +21,13 @@ export default function Main() {
             index: 0,
             routes: [
               { key: 'first', title: 'Mark you footprints' },
-              { key: 'second', title: 'What Next' },
+              { key: 'second', title: 'Scroll' },
             ],
         }
     )
 
     useEffect(() =>  {
-        setTimeout(
+        var timer = setTimeout(
             () => { setIsLoading(false) },
             2000
         )
